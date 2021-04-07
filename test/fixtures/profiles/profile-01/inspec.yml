@@ -1,0 +1,6 @@
+name: profile-01
+license: Apache-2.0
+summary: Profile to exercise using the input-vault plugin
+version: 0.0.1
+supports:
+  platform: os

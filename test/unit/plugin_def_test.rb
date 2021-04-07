@@ -48,4 +48,6 @@ describe InspecPlugins::Oscal::Plugin do
   it "should include a cli_command activator hook" do
     _(status.plugin_types).must_include(:input)
   end
+
+  
 end

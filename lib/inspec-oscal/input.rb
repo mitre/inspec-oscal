@@ -37,15 +37,25 @@ module InspecPlugins::Oscal
     end
 
     def list_inputs
-        
+        @extension_schema.fetch('extensions', {})
     end
 
     def namespace
         @extension_schema
-            .fetch('11extensions', {})
+            .fetch('extensions', {})
             .fetch('extension-namespace', {})
             .fetch('ns', {})
     end
+
+
+    def fetch_plugin_setting(setting_name, default = nil)
+        env_var_name = "INSPEC_OSCAL_#{setting_name.upcase}"
+        ENV[env_var_name] || plugin_conf[setting_name] || default
+      end
+  
+      def fetch_vault_setting(setting_name)
+        ENV[setting_name.upcase] || plugin_conf[setting_name]
+      end
 
   end
 end
