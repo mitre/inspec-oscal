@@ -32,4 +32,7 @@ Gem::Specification.new do |spec|
   ).reject { |f| File.directory?(f) }
   spec.require_paths = ["lib"]
 
+  # If you rely on any other gems, list them here with any constraints.
+  # This is how `inspec plugin install` is able to manage your dependencies.
+  spec.add_dependency "jsonpath", "~> 1.1.0"
 end
