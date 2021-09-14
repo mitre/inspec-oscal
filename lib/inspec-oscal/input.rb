@@ -25,7 +25,10 @@ module InspecPlugins::Oscal
       # extension_schema_path = fetch_plugin_setting("extension_schema_path", "extension.json")
       # @extension_schema = JSON.parse(open(extension_schema_path).read)
 
-      model_path = fetch_plugin_setting("model_path", "component.json")
+      model_path = fetch_plugin_setting("model_path")
+
+      return unless model_path
+
       @model = JSON.parse(open(model_path).read)
 
       props_json_path = JsonPath.new("$..components..control-implementations..implemented-requirements..props[?(@.ns==#{namespace})]")
@@ -41,12 +44,12 @@ module InspecPlugins::Oscal
                                   [params['param-id'], (params['values'].length.eql?(1) ? params['values'].first : params['values'])]
                                 end.to_h
                               end
-    end
+  end
 
     # Given a profile name, list all input names for which the plugin
     # would offer a response.
     def list_inputs(_profile)
-      @component_props.map { |obj| obj['class'] }
+      @component_props&.map { |obj| obj['class'] } || []
     end
 
     def namespace
@@ -54,6 +57,8 @@ module InspecPlugins::Oscal
     end
 
     def fetch(profile_name, input_name)
+      return unless @component_props
+
       results = @component_props.select { |obj| obj['class'] == input_name }
       if results.length > 0
         result = results.first
@@ -88,10 +93,6 @@ module InspecPlugins::Oscal
     def fetch_plugin_setting(setting_name, default = nil)
       env_var_name = "INSPEC_OSCAL_#{setting_name.upcase}"
       ENV[env_var_name] || plugin_conf[setting_name] || default
-    end
-
-    def fetch_vault_setting(setting_name)
-      ENV[setting_name.upcase] || plugin_conf[setting_name]
     end
   end
 end
